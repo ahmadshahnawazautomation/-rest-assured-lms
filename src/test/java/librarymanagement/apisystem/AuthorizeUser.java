@@ -17,7 +17,7 @@ public class AuthorizeUser extends AllGlobalValue {
      * This method will login and generate token and Authorizing the user
      */
     @Test (priority = 1)
-    public void verifyUserAuthorizationWithToken() {
+    public void authorizeUser() {
         // Setting up the objects
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username",username);
