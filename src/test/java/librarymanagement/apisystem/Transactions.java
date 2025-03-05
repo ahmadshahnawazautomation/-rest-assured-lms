@@ -4,7 +4,7 @@ import global.AllGlobalValue;
 import global.SessionsFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.ResponseBody;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -17,19 +17,19 @@ public class Transactions extends AllGlobalValue {
 
         // Setting up the objects
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username",username);
+        jsonObject.put("username",getUsername());
         jsonObject.put("title","Little Blue Truck");
 
         //Getting response
         response = given().filter(new SessionsFilter()).contentType(ContentType.JSON).accept(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
-                .body(jsonObject).log().all()
+                .body(jsonObject.toString()).log().all()
                 .when()
-                .post(baseUrl + "/transactions/borrow");
+                .post(getBaseUrl() + "/transactions/borrow");
 
         // Printing Response body to the console
-        ResponseBody body = response.getBody();
-        System.out.println("This is body "+body.asString());
+        String  responseBody  = response.getBody().asString();
+        System.out.println("This is body "+responseBody);
 
         // getting token from Response Body
           token = response.body().jsonPath().getString("token");
@@ -56,19 +56,19 @@ public class Transactions extends AllGlobalValue {
     public void returnBooksByPost() {
         // Setting up the objects
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username",username);
+        jsonObject.put("username",getUsername());
         jsonObject.put("title","Little Blue Truck");
 
             //Getting response
         response = given().filter(new SessionsFilter()).contentType(ContentType.JSON).accept(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
-                .body(jsonObject).log().all()
+                .body(jsonObject.toString()).log().all()
                 .when()
-                .post(baseUrl + "/transactions/return");
+                .post(getBaseUrl() + "/transactions/return");
 
         // Printing Response body to the console
-        ResponseBody body = response.getBody();
-        System.out.println("This is body "+body.asString());
+        String  responseBody  = response.getBody().asString();
+        System.out.println("This is body "+responseBody);
 
         // checking request is 200
         Assert.assertEquals(response.getStatusCode(), 200, "Status code is "+response.getStatusCode());
@@ -96,16 +96,18 @@ public class Transactions extends AllGlobalValue {
 
         // Setting up the objects
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username",username);
+        jsonObject.put("username",getUsername());
 
         //Getting response
         response = given().filter(new SessionsFilter()).contentType(ContentType.JSON).accept(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
-                .body(jsonObject).log().all()
+                .body(jsonObject.toString()).log().all()
                 .when()
-                .post(baseUrl + "/transactions/borrowing-history");
-        ResponseBody body = response.getBody();
-        System.out.println("This is body "+body.asString());
+                .post(getBaseUrl() + "/transactions/borrowing-history");
+
+        // Printing Response body to the console
+        String  responseBody  = response.getBody().asString();
+        System.out.println("This is body "+responseBody);
 
         // getting token from Response Body
         token = response.body().jsonPath().getString("token");

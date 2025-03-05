@@ -9,9 +9,20 @@ public class AllGlobalValue {
      * All global params for the test
      */
     public static Response response;
-    public static String username = "testuser";
-    public static String password="Secpass";
     public static String token;
-    public static String baseUrl = "https://librarymanagementapisystem.onrender.com";
 
+
+    //Getters for username
+    public String getUsername() {
+        return "testuser";
+    }
+    //Getters for password
+    public String getPassword() {
+        return "Secpass";
+    }
+
+    //Getters for baseUrl
+    public String getBaseUrl() {
+        return "https://librarymanagementapisystem.onrender.com";
+    }
 }

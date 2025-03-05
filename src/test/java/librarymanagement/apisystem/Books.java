@@ -14,7 +14,9 @@ import static io.restassured.RestAssured.given;
 public class Books extends AllGlobalValue {
 
 
-
+    /**
+     * This method is for getting all the books
+     */
     public void getAllBooks() {
         response = given()
                 .filter(new SessionsFilter())
@@ -24,7 +26,7 @@ public class Books extends AllGlobalValue {
                 .and()
                 .log().all()
                 .when()
-                .get(baseUrl + "/books/all");
+                .get(getBaseUrl() + "/books/all");
 
         // Pretty print the response body
         response.body().prettyPrint();
@@ -54,13 +56,17 @@ public class Books extends AllGlobalValue {
 
         //Printing Token & Response Body
         System.out.println("This is Token- " + token);
-        ResponseBody body = response.getBody();
-        System.out.println("This is body " + body.asString());
+
+        // Printing Response body to the console
+        String  responseBody  = response.getBody().asString();
+        System.out.println("This is body "+responseBody);
     }
 
-
+    /**
+     * This method is for getting books with the title
+     * @param title passes title to the method name
+     */
     public void getBooksWithTitle(String title) {
-        title = "Little Blue Truck";
         response = given()
                 .filter(new SessionsFilter())
                 .header("authorization", "Bearer " + token)
@@ -69,7 +75,7 @@ public class Books extends AllGlobalValue {
                 .and()
                 .log().all()
                 .when()
-                .get(baseUrl + "/books/title/" + title);
+                .get(getBaseUrl() + "/books/title/" + title);
 
         // Pretty print the response body
         response.body().prettyPrint();
@@ -82,12 +88,17 @@ public class Books extends AllGlobalValue {
 
         //Printing Token & Response Body
         System.out.println("This is Token- " + token);
-        ResponseBody body = response.getBody();
-        System.out.println("This is body " + body.asString());
+
+        // Printing Response body to the console
+        String  responseBody  = response.getBody().asString();
+        System.out.println("This is body "+responseBody);
     }
 
+    /**
+     * * This method is for getting the books with Author
+     * @param author passes Author name to the method
+     */
     public void getBooksWithAuthor(String author) {
-        author = "Alice Schertle";
         response = given()
                 .filter(new SessionsFilter())
                 .header("authorization", "Bearer " + token)
@@ -96,7 +107,7 @@ public class Books extends AllGlobalValue {
                 .and()
                 .log().all()
                 .when()
-                .get(baseUrl + "/books/author/" + author);
+                .get(getBaseUrl() + "/books/author/" + author);
 
         // Pretty print the response body
         response.body().prettyPrint();
@@ -109,7 +120,9 @@ public class Books extends AllGlobalValue {
 
         //Printing Token & Response Body
         System.out.println("This is Token- " + token);
-        ResponseBody body = response.getBody();
-        System.out.println("This is body " + body.asString());
+
+        // Printing Response body to the console
+        String responseBody  = response.getBody().asString();
+        System.out.println("This is body "+responseBody);
     }
 }
