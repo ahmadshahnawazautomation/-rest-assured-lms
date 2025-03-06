@@ -3,8 +3,7 @@ package librarymanagement.apisystem;
 import global.AllGlobalValue;
 import global.SessionsFilter;
 import io.restassured.http.ContentType;
-import io.restassured.response.ResponseBody;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -20,18 +19,18 @@ public class AuthorizeUser extends AllGlobalValue {
     public void verifyUserAuthorizationWithToken() {
         // Setting up the objects
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username",username);
-        jsonObject.put("password",password);
+        jsonObject.put("username",getUsername());
+        jsonObject.put("password",getPassword());
 
         //Getting response
         response = given().filter(new SessionsFilter()).contentType(ContentType.JSON).accept(ContentType.JSON)
-                .body(jsonObject).log().all()
+                .body(jsonObject.toString()).log().all()
                 .when()
-                    .post(baseUrl + "/member/login");
+                .post(getBaseUrl() + "/member/login");
 
         // Printing Response body to the console
-        ResponseBody body = response.getBody();
-        System.out.println("This is body "+body.asString());
+        String  responseBody  = response.getBody().asString();
+        System.out.println("This is body "+responseBody);
 
         // getting token from Response Body
         token = response.body().jsonPath().getString("token");
@@ -61,7 +60,7 @@ public class AuthorizeUser extends AllGlobalValue {
         // If the response contains a userId or similar key, validate it's not null
         String userId = response.jsonPath().getString("userId");
         Assert.assertNotNull(userId, userId +" shouldn't be null After Authorization ");
-        }
+    }
 
     /**
      * This method is used to validate the Token is generated successfully
@@ -73,13 +72,12 @@ public class AuthorizeUser extends AllGlobalValue {
         token = response.path("token");
 
         // Printing Response body to the console
-        ResponseBody body = response.getBody();
-        System.out.println("This is body "+body.asString());
+        String  responseBody  = response.getBody().asString();
+        System.out.println("This is body "+responseBody);
 
         //Assert that response body contains token and its value is generated
         Assert.assertEquals("token", "token");
         Assert.assertNotNull(token);
     }
 
-    }
-
+}

@@ -10,7 +10,7 @@ public class TestRun extends AllGlobalValue {
      * *  This method will get all the books and Get book details with different conditions and check availability
      */
     @Test
-    public  void getAllBooks() {
+    public  void testBooks() {
         Books books =  new Books();
         books.getAllBooks();
         books.getBooksWithAuthor("Alice Schertle");
