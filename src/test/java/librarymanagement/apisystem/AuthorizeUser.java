@@ -28,29 +28,36 @@ public class AuthorizeUser extends AllGlobalValue {
                 .when()
                 .post(getBaseUrl() + "/member/login");
 
+        //getting the status code
+
         int statusCode = response.getStatusCode();
         System.out.println("Response Status Code: " + statusCode);
 
+
         //Checking for wrong credentials
-        if(statusCode==401){
-        Assert.assertEquals(statusCode, 401, "Expected 401 Unauthorized for invalid credentials");
+        switch (statusCode) {
+            //401 Scenarios invalid credentials
+            case 401 -> Assert.assertEquals(statusCode, 200, "Expected 401 Unauthorized for invalid credentials");
 
-        }else{
+            //403 Scenarios  requested resource is forbidden
+            case 403 -> Assert.assertEquals(statusCode, 200, "Access to the requested resource is forbidden");
 
-            // Printing Response body to the console
-            String  responseBody  = response.getBody().asString();
-            System.out.println("This is body "+responseBody);
+            default -> {
+                // Printing Response body to the console
+                String responseBody = response.getBody().asString();
+                System.out.println("This is body " + responseBody);
 
-            // getting token from Response Body
-            token = response.body().jsonPath().getString("token");
+                // getting token from Response Body
+                token = response.body().jsonPath().getString("token");
 
-            // Asserting the Generated Token
-            Assert.assertNotNull(token, token+" :Token is not null");
-            Assert.assertFalse(token.isEmpty(), token + " :Token shouldn't be empty");
-
-            validateThatUserIsAuthorized();
-            validateTokenIsGenerated();
+                // Asserting the Generated Token
+                Assert.assertNotNull(token, token + " :Token is not null");
+                Assert.assertFalse(token.isEmpty(), token + " :Token shouldn't be empty");
+                validateThatUserIsAuthorized();
+                validateTokenIsGenerated();
+            }
         }
+
 
     }
 
