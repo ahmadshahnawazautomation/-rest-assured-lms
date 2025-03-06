@@ -20,22 +20,14 @@ public class SessionsFilter implements Filter {
      * @return returns response
      */
     public Response filter(FilterableRequestSpecification requestSpec, FilterableResponseSpecification responseSpec, FilterContext ctx) {
-
+        Response response ;
         // Checking if Authorization is not null and token is Null
         if((requestSpec.getHeaders().get("Authorization") !=null)&&(requestSpec.getHeaders().get("Authorization").getValue()).equalsIgnoreCase("Bearer null")){
             authorizeUser.verifyUserAuthorizationWithToken();
             requestSpec.removeHeader("Authorization");
             requestSpec.header("Authorization", "Bearer " + token);
         }
-        Response response = ctx.next(requestSpec, responseSpec);
-
-        // Checking if response status code is 401 or 403
-        if(response.getStatusCode()==401||response.getStatusCode()==403){
-            authorizeUser.verifyUserAuthorizationWithToken();
-            requestSpec.removeHeader("Authorization");
-            requestSpec.header("Authorization", "Bearer " + token);
-            response = ctx.next(requestSpec, responseSpec);
-        }
+         response = ctx.next(requestSpec, responseSpec);
         return response;
     }
 
