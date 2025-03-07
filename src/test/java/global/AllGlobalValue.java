@@ -12,6 +12,7 @@ public class AllGlobalValue {
     public static String token;
 
 
+
     //Getters for username
     public String getUsername() {
         return "testuser";
@@ -24,5 +25,15 @@ public class AllGlobalValue {
     //Getters for baseUrl
     public String getBaseUrl() {
         return "https://librarymanagementapisystem.onrender.com";
+
+        }
+
+    //Getters for username
+    public String getInvalidUsername() {
+        return "testuser1";
     }
+    //Getters for password
+    public String getInvalidPassword() {
+        return "Secpass1";
+}
 }

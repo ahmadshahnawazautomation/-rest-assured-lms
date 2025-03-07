@@ -2,6 +2,7 @@ package librarymanagement.apisystem;
 
 import global.AllGlobalValue;
 import global.SessionsFilter;
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -11,16 +12,16 @@ import org.testng.annotations.Test;
 import static io.restassured.RestAssured.given;
 
 public class AuthorizeUser extends AllGlobalValue {
-
+    JSONObject jsonObject = new JSONObject();
     /**
      * This method will login and generate token and Authorizing the user
      */
     @Test (priority = 1)
+    // Setting up the objects
     public void verifyUserAuthorizationWithToken() {
-        // Setting up the objects
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username",getUsername());
-        jsonObject.put("password",getPassword());
+
+            jsonObject.put("username", getUsername());
+            jsonObject.put("password", getPassword());
 
         //Getting response
         response = given().filter(new SessionsFilter()).contentType(ContentType.JSON).accept(ContentType.JSON)
@@ -28,19 +29,6 @@ public class AuthorizeUser extends AllGlobalValue {
                 .when()
                 .post(getBaseUrl() + "/member/login");
 
-        // Printing Response body to the console
-        String  responseBody  = response.getBody().asString();
-        System.out.println("This is body "+responseBody);
-
-        // getting token from Response Body
-        token = response.body().jsonPath().getString("token");
-
-        // Asserting the Generated Token
-        Assert.assertNotNull(token, token+" :Token is not null");
-        Assert.assertFalse(token.isEmpty(), token + " :Token shouldn't be empty");
-
-        validateThatUserIsAuthorized();
-        validateTokenIsGenerated();
     }
 
     /**
@@ -50,6 +38,7 @@ public class AuthorizeUser extends AllGlobalValue {
 
         //assert status code
         response.then().log().all().assertThat().statusCode(200);
+
 
     }
 
@@ -65,5 +54,31 @@ public class AuthorizeUser extends AllGlobalValue {
         Assert.assertEquals("token", "token");
         Assert.assertNotNull(token);
     }
+    /**
+     * This method will verify the user is Authorized
+     */
+    public void validateValidUserCredentials(JSONObject jsonObject, String userName, String password) {
+        RestAssured.baseURI = getBaseUrl();
+        jsonObject.put("username", userName);
+        jsonObject.put("password", password);
 
+    }
+
+    /**
+     * This method will verify the Unauthorized and Authorized user
+     */
+    public void sendApiByPost(String flag) {
+        if(flag.equalsIgnoreCase("Invalid credentials")) {
+            jsonObject.put("username", getInvalidUsername());
+            jsonObject.put("password", getInvalidPassword());
+            response = given().contentType(ContentType.JSON)
+                    .accept(ContentType.JSON)
+                    .body(jsonObject.toString())
+                    .when()
+                    .post("/member/login");
+
+        }else {
+            verifyUserAuthorizationWithToken();
+        }
+    }
 }

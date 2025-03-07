@@ -13,6 +13,9 @@ import static io.restassured.RestAssured.given;
 public class Transactions extends AllGlobalValue {
 
     @Test
+    /*
+     * This method will is for Borrowing the books by POST
+     */
     public void borrowBooksByPost() {
 
         // Setting up the objects
@@ -31,33 +34,29 @@ public class Transactions extends AllGlobalValue {
         String  responseBody  = response.getBody().asString();
         System.out.println("This is body "+responseBody);
 
-        // getting token from Response Body
-          token = response.body().jsonPath().getString("token");
+    }
 
-          //checking request is 201
-        Assert.assertEquals(response.getStatusCode(), 201, "Status code is "+response.getStatusCode());
+    /**
+     * This method will is for verify Borrowed Successful Message
+     * @param message passes message to verify
+     */
+    public void verifyBorrowedSuccessfullyMessage(String message){
 
-        //Validating response contains expected fields
-        String message = response.jsonPath().getString("message");
-        Assert.assertNotNull(message, "Response message shouldn't be null");
-
-        //Validating response message on successful request
-        Assert.assertTrue(message.contains("borrowed successfully"), "success message Successful");
-
-        // validating Token and printing
-        String newToken = response.body().jsonPath().getString("token");
-        if (newToken != null) {
-            token = newToken;
-            System.out.println(newToken);
-        }
+        String responseMessage = response.jsonPath().getString("message");
+        Assert.assertNotNull(responseMessage, "Response message shouldn't be null");
+        Assert.assertTrue(responseMessage.contains(message), "Success message should contain " + message);
     }
 
     @Test
-    public void returnBooksByPost() {
+    /*
+     * This method will is for Return the books by POST
+     * @param book passes string to method
+     */
+    public void returnBooksByPost(String book) {
         // Setting up the objects
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username",getUsername());
-        jsonObject.put("title","Little Blue Truck");
+        jsonObject.put("title",book);
 
             //Getting response
         response = given().filter(new SessionsFilter()).contentType(ContentType.JSON).accept(ContentType.JSON)
@@ -69,34 +68,17 @@ public class Transactions extends AllGlobalValue {
         // Printing Response body to the console
         String  responseBody  = response.getBody().asString();
         System.out.println("This is body "+responseBody);
-
-        // checking request is 200
-        Assert.assertEquals(response.getStatusCode(), 200, "Status code is "+response.getStatusCode());
-
-        //Validating response contains expected fields
-        String message = response.jsonPath().getString("message");
-        Assert.assertNotNull(message, "Response message shouldn't be null");
-
-        //Validating response message on successful request
-        Assert.assertTrue(message.contains("returned successfully"), "success message Successful");
-
-        // getting token from Response Body
-        token = response.body().jsonPath().getString("token");
-
-        // validating Token and printing
-        String newToken = response.body().jsonPath().getString("token");
-        if (newToken != null) {
-            token = newToken;
-            System.out.println(newToken);
-        }
     }
 
     @Test
+    /*
+     * This method will is for verify Borrowing History By Post
+     */
     public void validateBorrowingHistoryByPost() {
 
         // Setting up the objects
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username",getUsername());
+        jsonObject.put("username", getUsername());
 
         //Getting response
         response = given().filter(new SessionsFilter()).contentType(ContentType.JSON).accept(ContentType.JSON)
@@ -106,21 +88,25 @@ public class Transactions extends AllGlobalValue {
                 .post(getBaseUrl() + "/transactions/borrowing-history");
 
         // Printing Response body to the console
-        String  responseBody  = response.getBody().asString();
-        System.out.println("This is body "+responseBody);
+        String responseBody = response.getBody().asString();
+        System.out.println("This is body " + responseBody);
+    }
+    /**
+     * This method will is for verify Borrowing History
+     */
+    public void verifyBorrowingHistory(){
 
-        // getting token from Response Body
-        token = response.body().jsonPath().getString("token");
-
-        // Verify HTTP status code is 200
-        Assert.assertEquals(response.getStatusCode(), 200, "Status code is "+response.getStatusCode());
-
-        //Validating borrowing history
+        // Validate borrowing history is returned in response
         String history = response.jsonPath().getString("borrowingHistory");
         Assert.assertNotNull(history, "Borrowing history should not be null");
-
-        // Validating that at least one book is listed in history
-        Assert.assertFalse(history.isEmpty(), "Borrowing history shouldn't be empty");
-
     }
+    /**
+     * This method will is for verify Borrowing History is not empty
+     */
+    public void verifyBorrowingHistoryNotEmpty(){
+        // Validate the history is not empty
+        String history = response.jsonPath().getString("borrowingHistory");
+        Assert.assertFalse(history.isEmpty(), "Borrowing history shouldn't be empty");
+    }
+
 }

@@ -37,22 +37,7 @@ public class Books extends AllGlobalValue {
         // Checking the response body is not empty
         Assert.assertTrue(response.body().asString().length() > 0, "Empty response Body");
 
-        // Checking the book Availability
-        try {
-            // List of Available books via array
-            List<Integer> availableCopiesList = response.jsonPath().getList("availableCopies", Integer.class);
 
-
-            // Checking at lest one copy of books is available
-            int totalAvailableCopies = availableCopiesList.stream().mapToInt(Integer::intValue).sum();
-
-            // Asserting that copy of books is more than 0
-            Assert.assertTrue(totalAvailableCopies > 0, "Total book availability should be greater than zero");
-
-        } catch (Exception e) {
-            // Exception handling
-            Assert.fail("Error extracting or summing available copies: " + e.getMessage());
-        }
 
         //Printing Token & Response Body
         System.out.println("This is Token- " + token);
@@ -62,6 +47,27 @@ public class Books extends AllGlobalValue {
         System.out.println("This is body "+responseBody);
     }
 
+    /**
+     *  This method will check the book Availability
+     */
+    public void checkBooksAvailabilityGreaterThanZero(){
+
+    try {
+        // List of Available books via array
+        List<Integer> availableCopiesList = response.jsonPath().getList("availableCopies", Integer.class);
+
+
+        // Checking at lest one copy of books is available
+        int totalAvailableCopies = availableCopiesList.stream().mapToInt(Integer::intValue).sum();
+
+        // Asserting that copy of books is more than 0
+        Assert.assertTrue(totalAvailableCopies > 0, "Total book availability should be greater than zero");
+
+    } catch (Exception e) {
+        // Exception handling
+        Assert.fail("Error extracting or summing available copies: " + e.getMessage());
+    }
+}
     /**
      * This method is for getting books with the title
      * @param title passes title to the method name
